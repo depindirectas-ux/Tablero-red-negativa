@@ -21,7 +21,10 @@ function readToken(event) {
 }
 
 exports.handler = async (event) => {
-  const store = getStore(STORE_NAME);
+  const store = getStore(STORE_NAME, {
+  siteID: process.env.NETLIFY_SITE_ID || process.env.SITE_ID,
+  token: process.env.NETLIFY_AUTH_TOKEN,
+});
 
   if (event.httpMethod === "GET") {
     const source = await store.get(SOURCE_KEY, { type: "json" });

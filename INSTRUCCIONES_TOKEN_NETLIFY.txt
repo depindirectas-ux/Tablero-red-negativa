@@ -1,0 +1,20 @@
+TOKEN PARA ACTUALIZAR LA BASE COMPARTIDA
+
+Clave:
+agSrQK$VULo$KZWD5Kh!mMeP
+
+Como usarla:
+
+1. En Netlify, abra el sitio del tablero.
+2. Entre a Site configuration > Environment variables.
+3. Agregue esta variable:
+
+   RED_NEGATIVA_UPDATE_TOKEN = agSrQK$VULo$KZWD5Kh!mMeP
+
+4. Vuelva a publicar el sitio.
+5. Cuando cargue una nueva base desde el tablero, el navegador le pedira esta clave.
+
+Nota:
+No conviene poner esta clave dentro del JavaScript del sitio, porque cualquier persona
+con la liga podria verla inspeccionando la pagina. Por eso debe ir como variable de
+entorno en Netlify.

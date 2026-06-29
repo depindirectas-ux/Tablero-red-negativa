@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Red Negativa · Mundial 2026</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand-mark">
+      <img src="assets/imss-bienestar.png" alt="IMSS-BIENESTAR">
+    </div>
+    <nav>
+      <a class="nav-item active" href="#resumen"><span>▦</span> Resumen</a>
+      <a class="nav-item" href="#eventos-diarios"><span>▦</span> Registros diarios</a>
+      <a class="nav-item" href="#casos-eventos"><span>▦</span> Casos por enfermedad o evento</a>
+      <a class="nav-item" href="#brotes-eventos"><span>▦</span> Brotes por enfermedad o evento</a>
+      <a class="nav-item" href="#defunciones-eventos"><span>▦</span> Defunciones</a>
+      <a class="nav-item" href="#mapa"><span>▦</span> Mapa semanal</a>
+      <span class="nav-item demo-label"><span>●</span> Versión demostrativa</span>
+    </nav>
+    <div class="privacy-note">Base compartida<br>Las actualizaciones se guardan en Netlify.</div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div class="title-cluster">
+        <div>
+          <p class="eyebrow">Vigilancia epidemiológica</p>
+          <h1>Tablero de Red diaria</h1>
+          <p class="subtitle">Copa Mundial de Futbol 2026</p>
+        </div>
+        <div class="header-logos" aria-label="Identidad institucional">
+          <img src="assets/coordinacion.png" alt="Coordinación de Epidemiología">
+          <img src="assets/vigilancia.png" alt="Vigilancia epidemiológica">
+          <img src="assets/mundial.jpeg" alt="Vigilancia Mundial 2026">
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="updated-card">
+          <span>Última actualización</span>
+          <strong id="updatedAt">—</strong>
+        </div>
+        <button class="primary-button" id="uploadButton" type="button">Cargar base</button>
+        <input id="fileInput" type="file" accept=".xlsx,.xlsm,.csv" hidden>
+      </div>
+    </header>
+
+    <div id="message" class="message" role="status"></div>
+
+    <section id="resumen" class="section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Panorama general</p>
+          <h2>Resumen de Coordinaciones estatales</h2>
+        </div>
+        <div class="filter-panel">
+          <label>
+            <span>Coordinación estatal</span>
+            <select id="stateFilter"></select>
+          </label>
+          <span class="data-range" id="dataRange">Periodo disponible: —</span>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <article class="kpi"><span>Reportes recibidos</span><strong id="reports">—</strong><small>registros en la base</small></article>
+        <article class="kpi"><span>Casos notificados</span><strong id="cases">—</strong><small>acumulado</small></article>
+        <article class="kpi"><span>Brotes notificados</span><strong id="outbreaks">—</strong><small>acumulado</small></article>
+        <article class="kpi"><span>Defunciones</span><strong id="deaths">—</strong><small>acumulado</small></article>
+      </div>
+
+      <div class="chart-grid">
+        <article id="eventos-diarios" class="panel chart-panel wide">
+          <div class="panel-title">
+            <div>
+              <span>Enfermedades y eventos diarios</span>
+              <h3>Curva epidémica de enfermedades y eventos sujetos vigilancia epidemiológica</h3>
+              <div class="mini-select daily-select">
+                <span>Seleccione las enfermedades o eventos de su interés</span>
+                <button class="multi-select-button" id="dailyEventToggle" type="button" aria-haspopup="true" aria-expanded="false">
+                  Todas las enfermedades y eventos
+                </button>
+                <div class="multi-select-menu" id="dailyEventMenu" hidden></div>
+                <div class="selected-events" id="selectedDailyEvents"></div>
+              </div>
+            </div>
+          </div>
+          <div id="dailyDiseaseChart" class="chart disease-chart"></div>
+        </article>
+
+        <article id="casos-eventos" class="panel chart-panel">
+          <div class="panel-title"><div><span>Casos</span><h3>Enfermedades y eventos con mayor número de casos</h3></div></div>
+          <div id="casesChart" class="chart"></div>
+        </article>
+        <article id="brotes-eventos" class="panel chart-panel">
+          <div class="panel-title"><div><span>Brotes</span><h3>Enfermedades y eventos con mayor número de brotes</h3></div></div>
+          <div id="outbreaksChart" class="chart"></div>
+        </article>
+        <article id="defunciones-eventos" class="panel chart-panel">
+          <div class="panel-title"><div><span>Defunciones</span><h3>Enfermedades y eventos con mayor número de defunciones</h3></div></div>
+          <div id="deathsChart" class="chart"></div>
+        </article>
+        <article id="tendencia-diaria" class="panel chart-panel">
+          <div class="panel-title trend-title">
+            <div><span>Brotes y defunciones</span><h3>Frecuencia de brotes o defunciones diaria</h3></div>
+            <label class="mini-select">
+              <span>Enfermedad o evento</span>
+              <select id="trendEventFilter"></select>
+            </label>
+          </div>
+          <div id="trendChart" class="chart"></div>
+        </article>
+      </div>
+
+      <div class="coverage-block-title">
+        <h2>Cobertura de notificación en red negativa por Coordinación estatal</h2>
+      </div>
+      <div class="entity-layout">
+        <article id="mapa" class="panel map-coverage-panel">
+          <div class="panel-title map-title">
+            <div>
+              <span>Mapa</span>
+              <h3>Cobertura semanal por Coordinación estatal</h3>
+              <small id="mapPeriod">Periodo seleccionado</small>
+            </div>
+            <div class="map-control-stack">
+              <div class="week-controls mini map-week-controls">
+                <button class="icon-button" id="previousWeek" aria-label="Semana anterior">←</button>
+                <label>
+                  <span>Sábado inicial</span>
+                  <input id="weekStart" type="date">
+                </label>
+                <button class="icon-button" id="nextWeek" aria-label="Semana siguiente">→</button>
+              </div>
+            </div>
+          </div>
+          <div class="map-scale-row">
+            <div id="mexicoMap" class="mexico-map"></div>
+            <div id="quartileScale" class="quartile-scale"></div>
+          </div>
+        </article>
+      </div>
+
+      <article id="mosaico-diario" class="panel mosaic-panel">
+        <div class="panel-title"><div><span>Red diaria</span><h3>Mosaico de notificación diaria</h3></div></div>
+        <div id="dailyMosaic" class="daily-mosaic"></div>
+        <p class="mosaic-note">Se encuentran coloreados en color verde aquellos registros de red diaria con casos; RN: red negativa (registro diario sin casos) y rojo SR: sin registro de red negativa.</p>
+      </article>
+    </section>
+  </main>
+
+  <div class="loading" id="loading" hidden>
+    <div class="spinner"></div>
+    <strong>Procesando la base…</strong>
+    <span>Esto puede tardar unos segundos.</span>
+  </div>
+
+  <script src="assets-inline.js?v=20260626l"></script>
+  <script src="xlsx-upload.js?v=20260626l"></script>
+  <script src="app.js?v=20260626l"></script>
+</body>
+</html>
